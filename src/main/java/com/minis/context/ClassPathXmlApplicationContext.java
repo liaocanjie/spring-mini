@@ -3,12 +3,12 @@ package com.minis.context;
 import com.minis.beans.factory.BeanFactory;
 import com.minis.beans.BeansException;
 import com.minis.beans.factory.config.BeanDefinition;
-import com.minis.beans.factory.support.AutowireCapableBeanFactory;
+import com.minis.beans.factory.support.AbstractAutowireCapableBeanFactory;
+import com.minis.beans.factory.support.DefaultListableBeanFactory;
 import com.minis.core.AutowiredAnnotationBeanPostProcessor;
 import com.minis.core.BeanFactoryPostProcessor;
 import com.minis.core.ClassPathXmlResource;
 import com.minis.core.Resource;
-import com.minis.beans.factory.support.SimpleBeanFactory;
 import com.minis.beans.factory.xml.XmlBeanDefinitionReader;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class ClassPathXmlApplicationContext implements BeanFactory, ApplicationEventPublisher {
 
-    AutowireCapableBeanFactory beanFactory;
+    AbstractAutowireCapableBeanFactory beanFactory;
 
     private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
 
@@ -36,7 +36,7 @@ public class ClassPathXmlApplicationContext implements BeanFactory, ApplicationE
      */
     public ClassPathXmlApplicationContext(String fileName, boolean isRefresh){
         Resource resource = new ClassPathXmlResource(fileName);
-        AutowireCapableBeanFactory beanFactory = new AutowireCapableBeanFactory();
+        AbstractAutowireCapableBeanFactory beanFactory = new DefaultListableBeanFactory();
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
         reader.loadBeanDefinitions(resource);
         this.beanFactory = beanFactory;
@@ -109,7 +109,7 @@ public class ClassPathXmlApplicationContext implements BeanFactory, ApplicationE
         this.beanFactoryPostProcessors.add(postProcessor);
     }
 
-    private void registerBeanPostProcessors(AutowireCapableBeanFactory beanFactory) {
+    private void registerBeanPostProcessors(AbstractAutowireCapableBeanFactory beanFactory) {
         beanFactory.addBeanPostProcessor(new AutowiredAnnotationBeanPostProcessor());
     }
 }

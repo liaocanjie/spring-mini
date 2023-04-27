@@ -22,8 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2023/4/27
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory, BeanDefinitionRegistry {
-    private Map<String, BeanDefinition> beanDefinitions = new ConcurrentHashMap<>(256);
-    private List<String> beanDefinitionNames = new ArrayList<>();
+    protected Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
+    protected List<String> beanDefinitionNames = new ArrayList<>();
 
     public void refresh(){
         for (String name : beanDefinitionNames) {
@@ -45,7 +45,7 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
             singleton = this.earlySingletonObjects.get(beanName);
             if(singleton == null){
                 System.out.println("get bean null -------------- " + beanName);
-                BeanDefinition beanDefinition = beanDefinitions.get(beanName);
+                BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
                 if(beanDefinition == null){
                     throw new BeansException("No bean.");
                 }
@@ -205,7 +205,7 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     @Override
     public void registerBeanDefinition(BeanDefinition beanDefinition) {
-        this.beanDefinitions.put(beanDefinition.getId(), beanDefinition);
+        this.beanDefinitionMap.put(beanDefinition.getId(), beanDefinition);
         this.beanDefinitionNames.add(beanDefinition.getId());
 //        if(!beanDefinition.isLazyInit()){
 //            try {
@@ -243,19 +243,19 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     @Override
     public void removeBeanDefinition(String name) {
-        this.beanDefinitions.remove(name);
+        this.beanDefinitionMap.remove(name);
         this.beanDefinitionNames.remove(name);
         this.removeSingleton(name);
     }
 
     @Override
     public BeanDefinition getBeanDefinition(String name) {
-        return this.beanDefinitions.get(name);
+        return this.beanDefinitionMap.get(name);
     }
 
     @Override
     public boolean containsBeanDefinition(String name) {
-        return this.beanDefinitions.containsKey(name);
+        return this.beanDefinitionMap.containsKey(name);
     }
 
     abstract public Object applyBeanPostProcessorBeforeInitialization(Object existingBean, String beanName) throws BeansException;

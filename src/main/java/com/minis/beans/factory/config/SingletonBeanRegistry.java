@@ -1,6 +1,7 @@
 package com.minis.beans.factory.config;
 
 /**
+ * 管理单例的Bean实例
  * @author lcj
  * @date 2023/4/25
  */
